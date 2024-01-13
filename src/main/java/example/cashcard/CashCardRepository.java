@@ -2,6 +2,8 @@ package example.cashcard;
 
 import org.springframework.data.repository.CrudRepository;
 
+import java.util.Optional;
+
 /**
  * The cash card repository.
  *
@@ -12,4 +14,7 @@ import org.springframework.data.repository.CrudRepository;
  * @author Josh Cummings
  */
 public interface CashCardRepository extends CrudRepository<CashCard, Long> {
+    Optional<CashCard> findByIdAndOwner(Long id, String owner);
+
+    Iterable<CashCard> findByOwner(String owner);
 }

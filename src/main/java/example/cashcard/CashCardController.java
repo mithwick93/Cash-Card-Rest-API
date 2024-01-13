@@ -20,22 +20,23 @@ import java.net.URI;
 @RestController
 @RequestMapping("/cashcards")
 public class CashCardController {
-    private CashCardRepository cashCards;
+    private final CashCardRepository cashCards;
 
     public CashCardController(CashCardRepository cashCards) {
         this.cashCards = cashCards;
     }
 
     @GetMapping("/{requestedId}")
-    public ResponseEntity<CashCard> findById(@PathVariable Long requestedId) {
-        return this.cashCards.findById(requestedId)
+    public ResponseEntity<CashCard> findById(@PathVariable Long requestedId, @CurrentOwner String owner) {
+        return this.cashCards.findByIdAndOwner(requestedId, owner)
                 .map(ResponseEntity::ok)
                 .orElseGet(() -> ResponseEntity.notFound().build());
     }
 
     @PostMapping
-    private ResponseEntity<CashCard> createCashCard(@RequestBody CashCard newCashCardRequest, UriComponentsBuilder ucb) {
-        CashCard savedCashCard = cashCards.save(newCashCardRequest);
+    private ResponseEntity<CashCard> createCashCard(@RequestBody CashCard newCashCardRequest, UriComponentsBuilder ucb, @CurrentOwner String owner) {
+        CashCard newCashCard = new CashCard(newCashCardRequest.amount(), owner);
+        CashCard savedCashCard = cashCards.save(newCashCard);
         URI locationOfNewCashCard = ucb
                 .path("cashcards/{id}")
                 .buildAndExpand(savedCashCard.id())
@@ -44,7 +45,7 @@ public class CashCardController {
     }
 
     @GetMapping
-    public ResponseEntity<Iterable<CashCard>> findAll() {
-        return ResponseEntity.ok(this.cashCards.findAll());
+    public ResponseEntity<Iterable<CashCard>> findAll(@CurrentOwner String owner) {
+        return ResponseEntity.ok(this.cashCards.findByOwner(owner));
     }
 }
