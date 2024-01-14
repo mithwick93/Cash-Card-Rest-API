@@ -27,8 +27,8 @@ public class CashCardController {
     }
 
     @GetMapping("/{requestedId}")
-    public ResponseEntity<CashCard> findById(@PathVariable Long requestedId, @CurrentOwner String owner) {
-        return this.cashCards.findByIdAndOwner(requestedId, owner)
+    public ResponseEntity<CashCard> findById(@PathVariable Long requestedId) {
+        return this.cashCards.findById(requestedId)
                 .map(ResponseEntity::ok)
                 .orElseGet(() -> ResponseEntity.notFound().build());
     }
@@ -45,7 +45,7 @@ public class CashCardController {
     }
 
     @GetMapping
-    public ResponseEntity<Iterable<CashCard>> findAll(@CurrentOwner String owner) {
-        return ResponseEntity.ok(this.cashCards.findByOwner(owner));
+    public ResponseEntity<Iterable<CashCard>> findAll() {
+        return ResponseEntity.ok(this.cashCards.findAll());
     }
 }
