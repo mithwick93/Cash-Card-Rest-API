@@ -33,8 +33,16 @@ class CashCardApplicationTests {
                 .andExpect(jsonPath("$.owner").value("sarah1"));
     }
 
-    @WithMockUser(username = "esuez5", authorities = {"SCOPE_cashcard:read", "SCOPE_cashcard:write"})
+
     @Test
+    @WithMockUser(username = "esuez5", authorities = {"SCOPE_cashcard:read"})
+    void shouldReturnForbiddenWhenCardBelongsToSomeoneElse() throws Exception {
+        this.mvc.perform(get("/cashcards/99"))
+                .andExpect(status().isForbidden());
+    }
+
+    @Test
+    @WithMockUser(username = "esuez5", authorities = {"SCOPE_cashcard:read", "SCOPE_cashcard:write"})
     @DirtiesContext
     void shouldCreateANewCashCard() throws Exception {
         String location = this.mvc.perform(post("/cashcards")

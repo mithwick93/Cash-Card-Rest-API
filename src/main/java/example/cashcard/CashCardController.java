@@ -1,6 +1,7 @@
 package example.cashcard;
 
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PostAuthorize;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -27,6 +28,7 @@ public class CashCardController {
     }
 
     @GetMapping("/{requestedId}")
+    @PostAuthorize("returnObject.body.owner == authentication.name")
     public ResponseEntity<CashCard> findById(@PathVariable Long requestedId) {
         return cashCards.findById(requestedId)
                 .map(ResponseEntity::ok)
@@ -34,7 +36,7 @@ public class CashCardController {
     }
 
     @PostMapping
-    private ResponseEntity<CashCard> createCashCard(@RequestBody CashCard newCashCardRequest, UriComponentsBuilder ucb, @CurrentOwner String owner) {
+    public ResponseEntity<CashCard> createCashCard(@RequestBody CashCard newCashCardRequest, UriComponentsBuilder ucb, @CurrentOwner String owner) {
         CashCard newCashCard = new CashCard(newCashCardRequest.amount(), owner);
         CashCard savedCashCard = cashCards.save(newCashCard);
         URI locationOfNewCashCard = ucb

@@ -5,6 +5,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.config.Customizer;
+import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.web.SecurityFilterChain;
 
@@ -15,7 +16,12 @@ import org.springframework.security.web.SecurityFilterChain;
  * @author Josh Cummings
  */
 @SpringBootApplication
+@EnableMethodSecurity
 public class CashCardApplication {
+
+    public static void main(String[] args) {
+        SpringApplication.run(CashCardApplication.class, args);
+    }
 
     @Bean
     SecurityFilterChain appSecurity(HttpSecurity http,
@@ -32,9 +38,4 @@ public class CashCardApplication {
                 );
         return http.build();
     }
-
-    public static void main(String[] args) {
-        SpringApplication.run(CashCardApplication.class, args);
-    }
-
 }
