@@ -16,6 +16,20 @@ the [Spring Academy OAuth 2.0 REST API Security Course repository](https://githu
 Learn more about building courses and labs in
 the [Spring Academy Contribution Guide](https://github.com/vmware-tanzu-learning/spring-academy/blob/main/CONTRIBUTING.md).
 
+### Running the Authorization Server
+
+```shell
+docker run --rm --name sso -p 9000:9000 ghcr.io/vmware-tanzu-learning/course-secure-rest-api-oauth2-code/sso:latest
+```
+
+### Tocken Request
+
+```shell
+#http -a <client_id>:<client_secret> --form <auth_server_endpoint> grant_type=<the_grant_type> scope=<scopes>
+
+http -a cashcard-client:secret --form :9000/oauth2/token grant_type=client_credentials scope=cashcard:read
+```
+
 ### GET All Cash Cards
 
 ```shell
